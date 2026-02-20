@@ -64,10 +64,13 @@ WfMenuMenuItem::WfMenuMenuItem(WayfireMenu *_menu, Glib::RefPtr<Gio::DesktopAppI
 {
     m_image.set((const Glib::RefPtr<const Gio::Icon>&)app->get_icon());
     m_image.set_pixel_size(48);
+    m_label.set_halign(Gtk::Align::CENTER);
+    m_label.set_size_request(75, -1);
     m_label.set_text(app->get_name());
-    m_label.set_xalign(0.0);
+    m_label.set_xalign(0.5);
     m_label.set_hexpand(true);
     m_has_actions = app->list_actions().size() > 0;
+    m_button_box.set_orientation(Gtk::Orientation::VERTICAL);
     m_button_box.append(m_image);
     m_button_box.append(m_label);
 
