@@ -1,5 +1,6 @@
 #include "item.hpp"
 #include "wf-popover.hpp"
+#include "icon-select.hpp"
 
 #include <gtk-utils.hpp>
 
@@ -185,10 +186,21 @@ void StatusNotifierItem::update_icon()
         get_item_property<Glib::ustring>("Status") == "NeedsAttention" ? "AttentionIcon" : "Icon";
     const bool hide = get_item_property<Glib::ustring>("Status") == "Passive";
     const auto icon_name = get_item_property<Glib::ustring>(icon_type_name + "Name");
+    const auto preferred_name =
+        preferred_icon(icon_name, prefer_symbolic_icons);
 
-    if (!IconProvider::image_set_icon(icon, icon_name))
+    bool icon_set = IconProvider::image_set_icon(icon, preferred_name);
+
+    if (!icon_set && (preferred_name != icon_name))
     {
-        const auto pixmap_data = extract_pixbuf(get_item_property<IconData>(icon_type_name + "Pixmap"));
+        icon_set = IconProvider::image_set_icon(icon, icon_name);
+    }
+
+    if (!icon_set)
+    {
+        const auto pixmap_data =
+            extract_pixbuf(get_item_property<IconData>(icon_type_name + "Pixmap"));
+
         if (pixmap_data)
         {
             icon.set(pixmap_data);
